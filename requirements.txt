@@ -1,7 +1,7 @@
 streamlit
-tensorflow-cpu
+tensorflow
 librosa
 numpy
 joblib
 scikit-learn
-soundfile
+soundfil
