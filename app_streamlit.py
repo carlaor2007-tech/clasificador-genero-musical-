@@ -23,7 +23,7 @@ def softmax(x):
 def predecir_numpy(vec, pesos):
     """Forward pass: Dense(ReLU) → Dense(Softmax)"""
     h = relu(vec @ pesos["capa_0_W"] + pesos["capa_0_b"])
-    out = softmax(h @ pesos["capa_1_W"] + pesos["capa_1_b"])
+    out = softmax((h @ pesos["capa_1_W"] + pesos["capa_1_b"]).flatten())
     return out
 
 # ── Carga de artefactos ───────────────────────────────────────────────────────
