@@ -1,7 +1,7 @@
-streamlit>=1.32.0
-tensorflow-cpu==2.15.0
-librosa>=0.10.0
-numpy>=1.24.0
-joblib>=1.3.0
-scikit-learn>=1.3.0
-soundfile>=0.12.0
+streamlit
+tensorflow-cpu
+librosa
+numpy
+joblib
+scikit-learn
+soundfile
