@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app_streamlit.py .
-COPY modelo_genero_musical.h5 .
+COPY model_weights.npz .
 COPY genre_names.npy .
 COPY scaler.pkl .
 COPY feature_cols.pkl .
@@ -16,3 +16,4 @@ COPY feature_cols.pkl .
 EXPOSE 8501
 
 CMD ["streamlit", "run", "app_streamlit.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
