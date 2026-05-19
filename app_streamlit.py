@@ -12,15 +12,29 @@ st.set_page_config(
     layout="centered"
 )
 
-# ── Carga del modelo y artefactos ─────────────────────────────────────────────
+# ── Red neuronal en numpy puro (sin tensorflow) ───────────────────────────────
+def relu(x):
+    return np.maximum(0, x)
+
+def softmax(x):
+    e = np.exp(x - np.max(x))
+    return e / e.sum()
+
+def predecir_numpy(vec, pesos):
+    """Forward pass: Dense(ReLU) → Dense(Softmax)"""
+    h = relu(vec @ pesos["capa_0_W"] + pesos["capa_0_b"])
+    out = softmax(h @ pesos["capa_1_W"] + pesos["capa_1_b"])
+    return out
+
+# ── Carga de artefactos ───────────────────────────────────────────────────────
 @st.cache_resource
 def cargar_modelo():
-    from tensorflow.keras.models import load_model
-    modelo      = load_model("modelo_genero_musical.h5")
-    generos     = np.load("genre_names.npy", allow_pickle=True)
-    scaler      = joblib.load("scaler.pkl")      if os.path.exists("scaler.pkl")      else None
-    feat_cols   = joblib.load("feature_cols.pkl") if os.path.exists("feature_cols.pkl") else None
-    return modelo, generos, scaler, feat_cols
+    datos   = np.load("model_weights.npz")
+    pesos   = {k: datos[k] for k in datos.files}
+    generos = np.load("genre_names.npy", allow_pickle=True)
+    scaler  = joblib.load("scaler.pkl")       if os.path.exists("scaler.pkl")       else None
+    f_cols  = joblib.load("feature_cols.pkl") if os.path.exists("feature_cols.pkl") else None
+    return pesos, generos, scaler, f_cols
 
 model, genre_names, SCALER, FEATURE_COLS = cargar_modelo()
 
@@ -82,7 +96,7 @@ if audio_file is not None:
 
         try:
             vec   = extract_features(tmp_path)
-            probs = model.predict(vec, verbose=0)[0]
+            probs = predecir_numpy(vec, model)
             idx   = int(np.argmax(probs))
             genre = genre_names[idx]
             conf  = float(probs[idx]) * 100
